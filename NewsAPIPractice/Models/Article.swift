@@ -21,7 +21,7 @@ struct Article: Decodable {
   var title: String?
   var description: String?
   var url: String? // TODO: Update to URL type.
-  var urlToImage: String? // TODO: Update to URL type.
+  var urlToImage: URL? // TODO: Update to URL type.
   var publishedAt: String? // TODO: Update to Date type.
 }
 

@@ -9,12 +9,10 @@ import UIKit
 
 class ViewController: UIViewController, UISearchControllerDelegate {
   
-  private var articles : [Article] = []
+  private var articleViewModels : [ArticleViewModel] = []
   
   private var filteredArticles : [Article] = []
-  
-  var searchController = UISearchController(searchResultsController: nil)
-  
+    
   // MARK: Properties
   lazy var tableview : UITableView = {
     let tv = UITableView()
@@ -31,21 +29,9 @@ class ViewController: UIViewController, UISearchControllerDelegate {
     super.viewDidLoad()
     configureUIComponents()
     fetchArticles()
-    
+        
     self.tableview.delegate = self
     self.tableview.dataSource = self
-    
-    filteredArticles = articles
-    
-    searchController.searchResultsUpdater = self
-    searchController.searchBar.sizeToFit()
-    searchController.obscuresBackgroundDuringPresentation = false
-    searchController.searchBar.placeholder = "Search for articles."
-    
-    navigationItem.searchController = searchController
-    navigationItem.hidesSearchBarWhenScrolling = true
-    
-//    self.tableview.tableHeaderView = searchController.searchBar
     
   }
   
@@ -56,10 +42,11 @@ class ViewController: UIViewController, UISearchControllerDelegate {
         guard let self = self else { return }  // Unwrap self safely
         switch result {
         case .success(let fetchedArticles):
-          self.articles = fetchedArticles
+          
+          self.articleViewModels = fetchedArticles.map({return ArticleViewModel(article: $0)})
           // Filter out articles with "[Removed]" in the title or content
-          self.articles = fetchedArticles.filter { article in
-            !(article.title?.contains("[Removed]") ?? false)
+          self.articleViewModels = self.articleViewModels.filter { article in
+            !(article.articleTitle?.contains("[Removed]") ?? false)
           }
           // Only reload the table view if there are articles to display
           if !fetchedArticles.isEmpty {
@@ -75,14 +62,14 @@ class ViewController: UIViewController, UISearchControllerDelegate {
   
   
   func configureUIComponents() {
-    self.navigationItem.title = "NewsAPI"
+    self.navigationItem.title = "Only10"
     
     self.navigationController?.navigationBar.prefersLargeTitles = true
     self.navigationItem.largeTitleDisplayMode = .always
     
     self.view.addSubview(tableview)
     tableview.translatesAutoresizingMaskIntoConstraints = false
-    
+        
     NSLayoutConstraint.activate([
       tableview.topAnchor.constraint(equalTo: self.view.topAnchor),
       tableview.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
@@ -94,31 +81,6 @@ class ViewController: UIViewController, UISearchControllerDelegate {
   
 }
 
-extension ViewController: UISearchBarDelegate, UISearchResultsUpdating {
-  
-  
-  // This method updates filteredData based on the text in the Search Box
-  func updateSearchResults(for searchController: UISearchController) {
-    if let searchText = searchController.searchBar.text {
-      filteredArticles = searchText.isEmpty ? articles : articles.filter { article in
-        return article.title!.lowercased().contains(searchText)
-      }
-      
-      self.tableview.reloadData()
-    }
-  }
-  
-  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    searchBar.showsCancelButton = true
-  }
-  
-  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-    searchBar.showsCancelButton = false
-    searchBar.text = ""
-    searchBar.resignFirstResponder()
-  }
-}
-
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -126,7 +88,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
       fatalError("The tableview could not dequeue a CustomNewsCell.")
     }
       
-    let articleList = searchController.isActive ? filteredArticles : articles
+    let articleList = /*searchController.isActive ? filteredArticles : */articleViewModels
 
     guard indexPath.row < articleList.count else {
       // Return an empty cell if the index is out of bounds
@@ -135,18 +97,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
 
     let article = articleList[indexPath.row]
-    cell.configure(article: article)
+    cell.articleVM = article
     return cell
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return searchController.isActive ? filteredArticles.count : articles.count
+    return /*searchController.isActive ? filteredArticles.count :*/ articleViewModels.count
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let selectedArticle = articles[indexPath.row]
+    let selectedArticle = articleViewModels[indexPath.row]
     
-    let detailVC = ArticleDetailViewController(article: selectedArticle)
+    let detailVC = ArticleDetailViewController(articleVM: selectedArticle)
     
     if let sheet = detailVC.sheetPresentationController {
       sheet.detents = [.medium(), .large()]

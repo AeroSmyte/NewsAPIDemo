@@ -7,7 +7,30 @@
 
 import UIKit
 
+// Only should be responsible for rendering.
+
 class CustomNewsCell: UITableViewCell {
+  
+  var articleVM: ArticleViewModel! {
+    didSet {
+      authorLabel.text = articleVM.articleAuthor
+      titleLabel.text = articleVM.articleTitle
+      
+//      articleImageView.image = articleVM.articleImage
+      
+      // Fetch the image directly in the cell, if necessary
+      if let imageUrlString = articleVM.articleUrlToImage {
+        fetchImage(from: imageUrlString) { [weak self] image in
+          DispatchQueue.main.async {
+            self?.articleImageView.image = image
+          }
+        }
+      } else {
+        articleImageView.image = UIImage(named: "placeholder")
+      }
+      
+    }
+  }
   
   static let indentifier = "NewsCell"
   
@@ -51,20 +74,20 @@ class CustomNewsCell: UITableViewCell {
     return iv
   }()
   
-  public func configure(article: Article) {
-    if let imageUrlString = article.urlToImage,
-       let url = URL(string: imageUrlString) {
-      fetchImage(from: url) { [weak self] image in
-        DispatchQueue.main.async {
-          self?.articleImageView.image = image
-        }
-      }
-    } else {
-      articleImageView.image = nil  // Set a placeholder if no image URL
-    }
-    self.authorLabel.text = article.author
-    self.titleLabel.text = article.title
-  }
+  //  public func configure(article: Article) {
+  //    if let imageUrlString = article.urlToImage,
+  //       let url = URL(string: imageUrlString) {
+  //      fetchImage(from: url) { [weak self] image in
+  //        DispatchQueue.main.async {
+  //          self?.articleImageView.image = image
+  //        }
+  //      }
+  //    } else {
+  //      articleImageView.image = nil  // Set a placeholder if no image URL
+  //    }
+  //    self.authorLabel.text = article.author
+  //    self.titleLabel.text = article.title
+  //  }
   
   // MARK: - Image Fetching
   

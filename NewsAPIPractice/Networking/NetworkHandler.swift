@@ -10,7 +10,7 @@ import Foundation
 enum Constants {
   static let baseURL = "https://newsapi.org/v2/top-headlines"
   static let country = "us"
-  static let apiKey  = "******************************" // NOTE: If you are pulling this project to test it, you will need to update this value to your own API key. To do so, here is the website: https://newsapi.org/. 
+  static let apiKey  = "**********************" // NOTE: If you are pulling this project to test it, you will need to update this value to your own API key. To do so, here is the website: https://newsapi.org/. 
   static var endPoint : String {
     Self.baseURL + "?country=" + Self.country + "&apiKey=" + Self.apiKey
   }

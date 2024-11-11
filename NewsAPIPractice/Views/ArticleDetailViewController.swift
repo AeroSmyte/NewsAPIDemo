@@ -10,7 +10,7 @@ import SafariServices
 
 class ArticleDetailViewController: UIViewController {
   
-  private var article: Article
+  private var articleVM: ArticleViewModel
   
   private lazy var heroImageView : UIImageView = {
     let iv = UIImageView()
@@ -59,8 +59,8 @@ class ArticleDetailViewController: UIViewController {
     return button
   }()
   
-  init(article: Article) {
-    self.article = article
+  init(articleVM: ArticleViewModel) {
+    self.articleVM = articleVM
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -74,10 +74,10 @@ class ArticleDetailViewController: UIViewController {
     configureUIComponents()
     
     
-    titleLabel.text = article.title
-    descriptionLabel.text = article.description
+    titleLabel.text = articleVM.articleTitle
+    descriptionLabel.text = articleVM.articleDescription
     
-    if let imageURL = article.urlToImage, let url = URL(string: imageURL) {
+    if let imageURL = articleVM.articleUrlToImage, let url = articleVM.articleUrlToImage {
       loadHeroImage(from: url)
     }
     
@@ -114,8 +114,8 @@ class ArticleDetailViewController: UIViewController {
   }
   
   @objc private func openWebView() {
-    guard let urlString = article.url, let url = URL(string: urlString) else { return }
-    let safariVC = SFSafariViewController(url: url)
+    guard let urlString = articleVM.articleUrl else { return }
+    let safariVC = SFSafariViewController(url: urlString)
     present(safariVC, animated: true)
   }
 }
