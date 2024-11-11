@@ -13,7 +13,7 @@ class CustomNewsCell: UITableViewCell {
   
   private lazy var containerView : UIView = {
     let view = UIView()
-    view.backgroundColor = .systemBackground
+    view.backgroundColor = .red
     view.layer.cornerRadius = 8
     view.layer.shadowColor = UIColor.black.cgColor
     view.layer.shadowOpacity = 0.1
@@ -26,7 +26,7 @@ class CustomNewsCell: UITableViewCell {
   private lazy var authorLabel : UILabel = {
     let label = UILabel()
     label.font = .systemFont(ofSize: 14, weight: .light)
-    label.textColor = .secondaryLabel
+    label.textColor = .appText
     label.numberOfLines = 3
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -34,8 +34,8 @@ class CustomNewsCell: UITableViewCell {
   
   private lazy var titleLabel : UILabel = {
     let label = UILabel()
-    label.font = .systemFont(ofSize: 16, weight: .black)
-    label.textColor = .label
+    label.font = .systemFont(ofSize: 16, weight: .medium)
+    label.textColor = .appText
     label.numberOfLines = 2
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -84,6 +84,8 @@ class CustomNewsCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
     contentView.addSubview(containerView)
+    contentView.backgroundColor = .appBackground
+    containerView.backgroundColor = .clear
     containerView.addSubview(articleImageView)
     containerView.addSubview(titleLabel)
     containerView.addSubview(authorLabel)

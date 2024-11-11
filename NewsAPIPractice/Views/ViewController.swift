@@ -14,7 +14,7 @@ class ViewController: UIViewController {
   // MARK: Properties
   lazy var tableview : UITableView = {
     let tv = UITableView()
-    tv.backgroundColor = .systemBackground
+    tv.backgroundColor = .appBackground
     tv.allowsSelection = true
     tv.rowHeight = 100
     tv.separatorStyle = .none
@@ -106,7 +106,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     if let sheet = detailVC.sheetPresentationController {
       sheet.detents = [.medium(), .large()]
-      sheet.prefersGrabberVisible = true
+      sheet.prefersGrabberVisible = false
     }
     
     present(detailVC, animated: true)

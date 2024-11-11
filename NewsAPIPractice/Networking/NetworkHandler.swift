@@ -31,6 +31,7 @@ class NetworkHandler {
       let decoder = JSONDecoder()
       do {
         let articles = try decoder.decode(ArticleResponse.self, from: data)
+        print(articles)
         completion(.success(articles.articles))
       } catch {
         completion(.failure(error))
