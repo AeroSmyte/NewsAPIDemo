@@ -12,7 +12,6 @@ struct ArticleResponse: Decodable {
 }
 
 struct Source: Decodable {
-    var id: String?
     var name: String?
 }
 
@@ -21,7 +20,8 @@ struct Article: Decodable {
   var author: String?
   var title: String?
   var description: String?
-  var url: String?
-  var urlToImage: String?
-  var publishedAt: String?
+  var url: String? // TODO: Update to URL type.
+  var urlToImage: String? // TODO: Update to URL type.
+  var publishedAt: String? // TODO: Update to Date type.
 }
+
