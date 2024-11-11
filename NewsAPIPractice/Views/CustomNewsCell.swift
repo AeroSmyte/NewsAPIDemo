@@ -114,6 +114,7 @@ class CustomNewsCell: UITableViewCell {
       articleImageView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
       
       articleImageView.widthAnchor.constraint(equalToConstant: 90),
+      articleImageView.heightAnchor.constraint(equalToConstant: 150),
       
       labelsStackView.leadingAnchor.constraint(equalTo: self.articleImageView.trailingAnchor, constant: 10),
       labelsStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
