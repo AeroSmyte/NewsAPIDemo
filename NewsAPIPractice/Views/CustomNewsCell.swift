@@ -11,40 +11,32 @@ class CustomNewsCell: UITableViewCell {
   
   static let indentifier = "NewsCell"
   
-  private lazy var labelsStackView: UIStackView = {
-    let sv = UIStackView()
-    sv.axis = .vertical
-//    sv.distribution = .equalSpacing
-    sv.alignment = .leading
-    sv.spacing = 3
-    sv.translatesAutoresizingMaskIntoConstraints = false
-    return sv
+  private lazy var containerView : UIView = {
+    let view = UIView()
+    view.backgroundColor = .systemBackground
+    view.layer.cornerRadius = 8
+    view.layer.shadowColor = UIColor.black.cgColor
+    view.layer.shadowOpacity = 0.1
+    view.layer.shadowOffset = CGSize(width: 0, height: 2)
+    view.layer.shadowRadius = 4
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
   }()
   
   private lazy var authorLabel : UILabel = {
     let label = UILabel()
-    label.font = .systemFont(ofSize: 10, weight: .thin)
-    label.text = "Author Name"
+    label.font = .systemFont(ofSize: 14, weight: .light)
+    label.textColor = .secondaryLabel
+    label.numberOfLines = 3
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
   
   private lazy var titleLabel : UILabel = {
     let label = UILabel()
-    label.font = .systemFont(ofSize: 24, weight: .medium)
+    label.font = .systemFont(ofSize: 16, weight: .black)
     label.textColor = .label
-    label.numberOfLines = 0
-    label.text = "Article Title"
-    label.translatesAutoresizingMaskIntoConstraints = false
-    return label
-  }()
-  
-  private lazy var descriptionLabel : UILabel = {
-    let label = UILabel()
-    label.font = .systemFont(ofSize: 16, weight: .light)
-    label.textColor = .gray
-    label.text = "This is a long description of an article."
-    label.numberOfLines = 0
+    label.numberOfLines = 2
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
@@ -53,8 +45,8 @@ class CustomNewsCell: UITableViewCell {
     let iv = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     iv.contentMode = .scaleAspectFit
     iv.image = UIImage(systemName: "questionmark")
-    iv.tintColor = .purple
     iv.clipsToBounds = true
+    iv.layer.cornerRadius = 8
     iv.translatesAutoresizingMaskIntoConstraints = false
     return iv
   }()
@@ -70,10 +62,8 @@ class CustomNewsCell: UITableViewCell {
     } else {
       articleImageView.image = nil  // Set a placeholder if no image URL
     }
-    //    self.articleImageView.image = UIImage()
     self.authorLabel.text = article.author
     self.titleLabel.text = article.title
-    self.descriptionLabel.text = article.description
   }
   
   // MARK: - Image Fetching
@@ -92,36 +82,41 @@ class CustomNewsCell: UITableViewCell {
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    self.setupUI()
+    
+    contentView.addSubview(containerView)
+    containerView.addSubview(articleImageView)
+    containerView.addSubview(titleLabel)
+    containerView.addSubview(authorLabel)
+    
+    self.configureUIComponents()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func setupUI() {
-    self.contentView.addSubview(articleImageView)
+  func configureUIComponents() {
     
-    labelsStackView.addArrangedSubview(titleLabel)
-    labelsStackView.addArrangedSubview(authorLabel)
-    labelsStackView.addArrangedSubview(descriptionLabel)
-    
-    self.contentView.addSubview(labelsStackView)
     
     NSLayoutConstraint.activate([
-      articleImageView.topAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.topAnchor),
-      articleImageView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
-      articleImageView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
+      containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+      containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+      containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+      containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
       
-      articleImageView.widthAnchor.constraint(equalToConstant: 90),
-      articleImageView.heightAnchor.constraint(equalToConstant: 150),
+      articleImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+      articleImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+      articleImageView.widthAnchor.constraint(equalToConstant: 60),
+      articleImageView.heightAnchor.constraint(equalToConstant: 60),
       
-      labelsStackView.leadingAnchor.constraint(equalTo: self.articleImageView.trailingAnchor, constant: 10),
-      labelsStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
-      labelsStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-      labelsStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor)
+      titleLabel.leadingAnchor.constraint(equalTo: articleImageView.trailingAnchor, constant: 10),
+      titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
+      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
       
-      
+      authorLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+      authorLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+      authorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+      authorLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -10)
     ])
   }
   

@@ -16,7 +16,8 @@ class ViewController: UIViewController {
     let tv = UITableView()
     tv.backgroundColor = .systemBackground
     tv.allowsSelection = true
-    tv.rowHeight = UITableView.automaticDimension
+    tv.rowHeight = 100
+    tv.separatorStyle = .none
     tv.register(CustomNewsCell.self, forCellReuseIdentifier: CustomNewsCell.indentifier)
     return tv
   }()
@@ -96,6 +97,19 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return articles.count
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let selectedArticle = articles[indexPath.row]
+    
+    let detailVC = ArticleDetailViewController(article: selectedArticle)
+    
+    if let sheet = detailVC.sheetPresentationController {
+      sheet.detents = [.medium(), .large()]
+      sheet.prefersGrabberVisible = true
+    }
+    
+    present(detailVC, animated: true)
   }
   
 }
