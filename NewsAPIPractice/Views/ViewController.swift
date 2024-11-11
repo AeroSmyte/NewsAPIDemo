@@ -7,9 +7,13 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UISearchControllerDelegate {
   
   private var articles : [Article] = []
+  
+  private var filteredArticles : [Article] = []
+  
+  var searchController = UISearchController(searchResultsController: nil)
   
   // MARK: Properties
   lazy var tableview : UITableView = {
@@ -31,7 +35,18 @@ class ViewController: UIViewController {
     self.tableview.delegate = self
     self.tableview.dataSource = self
     
-    // Do any additional setup after loading the view.
+    filteredArticles = articles
+    
+    searchController.searchResultsUpdater = self
+    searchController.searchBar.sizeToFit()
+    searchController.obscuresBackgroundDuringPresentation = false
+    searchController.searchBar.placeholder = "Search for articles."
+    
+    navigationItem.searchController = searchController
+    navigationItem.hidesSearchBarWhenScrolling = true
+    
+//    self.tableview.tableHeaderView = searchController.searchBar
+    
   }
   
   // MARK: - Networking
@@ -79,24 +94,53 @@ class ViewController: UIViewController {
   
 }
 
+extension ViewController: UISearchBarDelegate, UISearchResultsUpdating {
+  
+  
+  // This method updates filteredData based on the text in the Search Box
+  func updateSearchResults(for searchController: UISearchController) {
+    if let searchText = searchController.searchBar.text {
+      filteredArticles = searchText.isEmpty ? articles : articles.filter { article in
+        return article.title!.lowercased().contains(searchText)
+      }
+      
+      self.tableview.reloadData()
+    }
+  }
+  
+  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    searchBar.showsCancelButton = true
+  }
+  
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.showsCancelButton = false
+    searchBar.text = ""
+    searchBar.resignFirstResponder()
+  }
+}
+
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard indexPath.row < articles.count else {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomNewsCell.indentifier, for: indexPath) as? CustomNewsCell else {
+      fatalError("The tableview could not dequeue a CustomNewsCell.")
+    }
+      
+    let articleList = searchController.isActive ? filteredArticles : articles
+
+    guard indexPath.row < articleList.count else {
       // Return an empty cell if the index is out of bounds
-      return UITableViewCell()
+      fatalError("Index out of bounds when accessing article list.")
     }
     
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomNewsCell.indentifier, for: indexPath) as? CustomNewsCell else {
-      fatalError("The Tableview could not dequeue a CustomNewsCell in VC.")
-    }
-    let article = articles[indexPath.row]
+
+    let article = articleList[indexPath.row]
     cell.configure(article: article)
     return cell
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return articles.count
+    return searchController.isActive ? filteredArticles.count : articles.count
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

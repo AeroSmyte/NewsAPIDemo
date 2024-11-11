@@ -41,7 +41,7 @@ class ArticleDetailViewController: UIViewController {
   private lazy var descriptionLabel: UILabel = {
     let label = UILabel()
     label.font = UIFont.systemFont(ofSize: 16)
-    label.textColor = .accent
+    label.textColor = .white
     label.textAlignment = .center
     label.numberOfLines = 0
     label.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +52,7 @@ class ArticleDetailViewController: UIViewController {
     let button = UIButton(type: .system)
     button.setTitle("See This Article", for: .normal)
     button.titleLabel?.font = .boldSystemFont(ofSize: 18)
-    button.backgroundColor = .accent
+    button.backgroundColor = .white
     button.layer.cornerRadius = 10
     button.setTitleColor(.accent, for: .normal)
     button.translatesAutoresizingMaskIntoConstraints = false
